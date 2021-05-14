@@ -45,20 +45,24 @@ describe("Zfn - zod", () => {
 
   test("Should throw if the inputs are invalid", () => {
     expect(() =>
-      fnNumberBoolString("not a number" as any, true, "test")
+      // @ts-expect-error
+      fnNumberBoolString("not a number", true, "test")
     ).toThrow(/Expected number, received string/);
 
-    expect(() => fnNumberBoolString(5, null as any, "test")).toThrow(
-      /Expected boolean, received null/
-    );
+    expect(() =>
+      // @ts-expect-error
+      fnNumberBoolString(5, null, "test")
+    ).toThrow(/Expected boolean, received null/);
 
-    expect(() => fnNumberBoolString(5, true, {} as any)).toThrow(
-      /Expected string, received object/
-    );
+    expect(() =>
+      // @ts-expect-error
+      fnNumberBoolString(5, true, {})
+    ).toThrow(/Expected string, received object/);
 
-    expect(() => fnNumberBoolString(5, true, [] as any)).toThrow(
-      /Expected string, received array/
-    );
+    expect(() =>
+      // @ts-expect-error
+      fnNumberBoolString(5, true, [])
+    ).toThrow(/Expected string, received array/);
 
     expect(fnComplex([[10, { phoneNumber: "555-123-1234" }]])).toEqual(true);
     expect(() => fnComplex([[5, { phoneNumber: "555-123-1234" }]])).toThrow(
@@ -89,7 +93,9 @@ describe("Zfn - zod", () => {
     const fn = Zfn(stringOrNoneParser, (v) => v.toUpperCase());
 
     expect(fn("test")).toEqual("TEST");
-    expect(fn(null as any)).toEqual("NONE");
-    expect(() => fn(NaN as any)).toThrow("NaN is not welcome!");
+    // @ts-expect-error
+    expect(fn(null)).toEqual("NONE");
+    // @ts-expect-error
+    expect(() => fn(NaN)).toThrow("NaN is not welcome!");
   });
 });

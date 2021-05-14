@@ -6,11 +6,31 @@ export type UnwrapZfnParser<P> = P extends ZfnParser<infer G> ? G : never;
  */
 const ZFN_SYMBOL = Symbol("Zfn");
 
-export type Zfn<
-  I extends ZfnParser<any>[],
-  O,
+type IncludeMatchingProperties<T, V> = Pick<
+  T,
+  {
+    [K in keyof T]-?: T[K] extends V ? K : never;
+  }[keyof T]
+>;
+
+export type ZfnMetadata<I extends ZfnParser<any>[]> = {
+  [ZFN_SYMBOL]: true;
+  inputSchemas: I;
+};
+
+/**
+ * Describes a Zfn instance.
+ */
+export type ZfnType<
+  I extends ZfnParser<any>[] = ZfnParser<any>[],
+  O = any,
   F = (...args: { [K in keyof I]: UnwrapZfnParser<I[K]> }) => O
-> = { [ZFN_SYMBOL]: true; inputSchemas: I } & F;
+> = ZfnMetadata<I> & F;
+
+/**
+ * Strips all non-zfn values from an object type.
+ */
+export type CollectZfns<T> = IncludeMatchingProperties<T, ZfnMetadata<any>>;
 
 /**
  * Defines a function with runtime input validation using [myzod](https://www.npmjs.com/package/myzod).
@@ -33,7 +53,7 @@ export function Zfn<
   I extends ZfnParser<any>[],
   O,
   F = (...args: { [K in keyof I]: UnwrapZfnParser<I[K]> }) => O
->(...args: [...schemas: I, fn: F]): Zfn<I, O, F> {
+>(...args: [...schemas: I, fn: F]): ZfnType<I, O, F> {
   const inputSchemas = args.slice(0, -1) as I;
   const fn = args[args.length - 1] as any;
 
@@ -44,14 +64,12 @@ export function Zfn<
       : () => fn(),
     fn,
     { inputSchemas, [ZFN_SYMBOL]: true as const }
-  ) as any;
+  );
 }
 
 /**
  * Returns `true` if the passed value is a `Zfn` with runtime input validation.
  */
-export function isZfn(
-  value: unknown
-): value is Zfn<ZfnParser<any>[], unknown, Function> {
+export function isZfn(value: unknown): value is ZfnType {
   return typeof value === "function" && (value as any)[ZFN_SYMBOL] === true;
 }
