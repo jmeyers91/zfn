@@ -6,7 +6,7 @@
     "test": "NODE_ENV=test npx jest src",
     "clean": "rm -rf dist",
     "build": "npx tsc",
-    "prepublish": "npm run clean && npm run build && npm run test"
+    "prepare": "npm run clean && npm run build && npm run test"
   },
   "author": "James Meyers",
   "license": "MIT",
