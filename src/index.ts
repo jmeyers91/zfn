@@ -1,11 +1,6 @@
 export type ZfnParser<T> = { parse: (value: unknown) => T };
 export type UnwrapZfnParser<P> = P extends ZfnParser<infer G> ? G : never;
 
-/**
- * Used to mark Zfn instances so they can be identified with `isZfn`.
- */
-const ZFN_SYMBOL = Symbol("Zfn");
-
 type IncludeMatchingProperties<T, V> = Pick<
   T,
   {
@@ -14,7 +9,7 @@ type IncludeMatchingProperties<T, V> = Pick<
 >;
 
 export type ZfnMetadata<I extends ZfnParser<any>[]> = {
-  [ZFN_SYMBOL]: true;
+  _isZfn: true;
   inputSchemas: I;
 };
 
@@ -63,7 +58,7 @@ export function Zfn<
           fn(...(inputSchemas.map((schema, i) => schema.parse(args[i])) as any))
       : () => fn(),
     fn,
-    { inputSchemas, [ZFN_SYMBOL]: true as const }
+    { inputSchemas, _isZfn: true as const }
   );
 }
 
@@ -71,5 +66,5 @@ export function Zfn<
  * Returns `true` if the passed value is a `Zfn` with runtime input validation.
  */
 export function isZfn(value: unknown): value is ZfnType {
-  return typeof value === "function" && (value as any)[ZFN_SYMBOL] === true;
+  return typeof value === "function" && (value as any)._isZfn === true;
 }
