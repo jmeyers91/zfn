@@ -1,4 +1,15 @@
-import type * as z from "myzod";
+import * as z from "myzod";
+
+/**
+ * Used to mark Zfn instances so they can be identified with `isZfn`.
+ */
+const ZFN_SYMBOL = Symbol("Zfn");
+
+export type Zfn<
+  I extends z.Type<any>[],
+  O,
+  F = (...args: { [K in keyof I]: z.Infer<I[K]> }) => O
+> = { [ZFN_SYMBOL]: true; inputSchemas: I } & F;
 
 /**
  * Defines a function with runtime input validation using [myzod](https://www.npmjs.com/package/myzod).
@@ -21,7 +32,7 @@ export function Zfn<
   I extends z.Type<any>[],
   O,
   F = (...args: { [K in keyof I]: z.Infer<I[K]> }) => O
->(...args: [...schemas: I, fn: F]): { isRpcFn: true; inputSchemas: I } & F {
+>(...args: [...schemas: I, fn: F]): Zfn<I, O, F> {
   const inputSchemas = args.slice(0, -1) as I;
   const fn = args[args.length - 1] as any;
 
@@ -30,6 +41,15 @@ export function Zfn<
       ? (...args: unknown[]) =>
           fn(...(inputSchemas.map((schema, i) => schema.parse(args[i])) as any))
       : () => fn(),
-    { inputSchemas, isRpcFn: true as const }
+    { inputSchemas, [ZFN_SYMBOL]: true as const }
   ) as any;
+}
+
+/**
+ * Returns `true` if the passed value is a `Zfn` with runtime input validation.
+ */
+export function isZfn(
+  value: unknown
+): value is Zfn<z.Type<any>[], unknown, Function> {
+  return typeof value === "function" && (value as any)[ZFN_SYMBOL] === true;
 }

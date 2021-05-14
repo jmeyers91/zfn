@@ -1,4 +1,4 @@
-import { Zfn } from "..";
+import { isZfn, Zfn } from "..";
 import * as z from "myzod";
 
 const fnNumberBoolString = Zfn(
@@ -24,46 +24,72 @@ const fnComplex = Zfn(
   }
 );
 
-test("Should do nothing if the inputs are valid", () => {
-  expect(fnNumberBoolString(1, true, "test")).toEqual({
-    a: 1,
-    b: true,
-    c: "test",
+describe("Zfn", () => {
+  test("Should do nothing if the inputs are valid", () => {
+    expect(fnNumberBoolString(1, true, "test")).toEqual({
+      a: 1,
+      b: true,
+      c: "test",
+    });
+    expect(fnNumberBoolString(-123.4, false, "")).toEqual({
+      a: -123.4,
+      b: false,
+      c: "",
+    });
+    expect(fnNumberBoolString(-0, false, "👾")).toEqual({
+      a: -0,
+      b: false,
+      c: "👾",
+    });
   });
-  expect(fnNumberBoolString(-123.4, false, "")).toEqual({
-    a: -123.4,
-    b: false,
-    c: "",
-  });
-  expect(fnNumberBoolString(-0, false, "👾")).toEqual({
-    a: -0,
-    b: false,
-    c: "👾",
+
+  test("Should throw if the inputs are invalid", () => {
+    expect(() =>
+      fnNumberBoolString("not a number" as any, true, "test")
+    ).toThrow("expected type to be number but got string");
+
+    expect(() => fnNumberBoolString(5, null as any, "test")).toThrow(
+      "expected type to be boolean but got null"
+    );
+
+    expect(() => fnNumberBoolString(5, true, {} as any)).toThrow(
+      "expected type to be string but got object"
+    );
+
+    expect(() => fnNumberBoolString(5, true, [] as any)).toThrow(
+      "expected type to be string but got array"
+    );
+
+    expect(fnComplex([[10, { phoneNumber: "555-123-1234" }]])).toEqual(true);
+    expect(() => fnComplex([[5, { phoneNumber: "555-123-1234" }]])).toThrow(
+      "error parsing tuple at index 0: expected number to be greater than or equal to 10 but got 5"
+    );
+    expect(() => fnComplex([[10, { phoneNumber: "bad" }]])).toThrow(
+      'error parsing tuple at index 1: error parsing object at path: "phoneNumber" - expected string to match pattern /\\d\\d\\d-\\d\\d\\d-\\d\\d\\d\\d/ but did not'
+    );
   });
 });
 
-test("Should throw if the inputs are invalid", () => {
-  expect(() => fnNumberBoolString("not a number" as any, true, "test")).toThrow(
-    "expected type to be number but got string"
-  );
+describe("isZfn", () => {
+  test("Should return true for valid Zfn instances", () => {
+    expect(isZfn(fnNumberBoolString)).toEqual(true);
+    expect(isZfn(fnComplex)).toEqual(true);
+  });
 
-  expect(() => fnNumberBoolString(5, null as any, "test")).toThrow(
-    "expected type to be boolean but got null"
-  );
-
-  expect(() => fnNumberBoolString(5, true, {} as any)).toThrow(
-    "expected type to be string but got object"
-  );
-
-  expect(() => fnNumberBoolString(5, true, [] as any)).toThrow(
-    "expected type to be string but got array"
-  );
-
-  expect(fnComplex([[10, { phoneNumber: "555-123-1234" }]])).toEqual(true);
-  expect(() => fnComplex([[5, { phoneNumber: "555-123-1234" }]])).toThrow(
-    "error parsing tuple at index 0: expected number to be greater than or equal to 10 but got 5"
-  );
-  expect(() => fnComplex([[10, { phoneNumber: "bad" }]])).toThrow(
-    'error parsing tuple at index 1: error parsing object at path: "phoneNumber" - expected string to match pattern /\\d\\d\\d-\\d\\d\\d-\\d\\d\\d\\d/ but did not'
-  );
+  test("Should return false for non-Zfn instances", () => {
+    expect(isZfn(() => {})).toEqual(false);
+    expect(isZfn(function () {})).toEqual(false);
+    expect(isZfn(null)).toEqual(false);
+    expect(isZfn(undefined)).toEqual(false);
+    expect(isZfn(NaN)).toEqual(false);
+    expect(isZfn(10)).toEqual(false);
+    expect(isZfn("")).toEqual(false);
+    expect(isZfn("test")).toEqual(false);
+    expect(isZfn(true)).toEqual(false);
+    expect(isZfn(false)).toEqual(false);
+    expect(isZfn(/test/)).toEqual(false);
+    expect(isZfn({})).toEqual(false);
+    expect(isZfn([])).toEqual(false);
+    expect(isZfn({ isZfn: true })).toEqual(false);
+  });
 });

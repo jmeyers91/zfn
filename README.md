@@ -27,3 +27,10 @@ Zfn depends on `myzod` as a peer dependency, so make sure to install it as well.
 ```
 npm install zfn myzod
 ```
+
+## Usage
+
+Two functions are available:
+
+- `Zfn` - Takes any number of myzod schemas followed by a function. Returns a new function with the same signature as the input function but with arguments that are validated using the schemas.
+- `isZfn` - A utility function for checking if a value is a Zfn instance.
