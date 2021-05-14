@@ -23,7 +23,8 @@ import * as z from "myzod";
 const greet = Zfn(
   z.string(),
   z.number().min(0).max(100),
-  (name, age) => `Hello ${name} you are ${age} years old`
+  (name, age) =>
+    `Hello ${name.toUpperCase()} you are ${age.toFixed(1)} years old`
 );
 
 greet("alex", 42); // "Hello alex you are 42 years old"
