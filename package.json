@@ -1,6 +1,6 @@
 {
   "name": "zfn",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A tiny utility for writing TS functions with runtime type validation.",
   "keywords": [
     "myzod",
@@ -8,6 +8,8 @@
     "typescript",
     "validation"
   ],
+  "author": "James Meyers",
+  "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
     "test": "NODE_ENV=test npx jest src",
@@ -15,8 +17,10 @@
     "build": "npx tsc",
     "prepare": "npm run clean && npm run build && npm run test"
   },
-  "author": "James Meyers",
-  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmeyers91/zfn.git"
+  },
   "peerDependencies": {
     "myzod": "1.7.*"
   },
