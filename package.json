@@ -1,6 +1,13 @@
 {
   "name": "zfn",
-  "version": "0.0.4",
+  "version": "0.0.5",
+  "description": "A tiny utility for writing TS functions with runtime type validation.",
+  "keywords": [
+    "myzod",
+    "function",
+    "typescript",
+    "validation"
+  ],
   "main": "dist/index.js",
   "scripts": {
     "test": "NODE_ENV=test npx jest src",
