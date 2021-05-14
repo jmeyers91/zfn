@@ -41,6 +41,7 @@ export function Zfn<
       ? (...args: unknown[]) =>
           fn(...(inputSchemas.map((schema, i) => schema.parse(args[i])) as any))
       : () => fn(),
+    fn,
     { inputSchemas, [ZFN_SYMBOL]: true as const }
   ) as any;
 }

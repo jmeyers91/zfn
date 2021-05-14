@@ -68,6 +68,14 @@ describe("Zfn", () => {
       'error parsing tuple at index 1: error parsing object at path: "phoneNumber" - expected string to match pattern /\\d\\d\\d-\\d\\d\\d-\\d\\d\\d\\d/ but did not'
     );
   });
+
+  test("Should not clobber existing function fields", () => {
+    const fn = Zfn(
+      z.string(),
+      Object.assign(() => {}, { foo: "bar" })
+    );
+    expect(fn.foo).toEqual("bar");
+  });
 });
 
 describe("isZfn", () => {
