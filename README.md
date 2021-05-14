@@ -43,10 +43,8 @@ const turn = Zfn(DirectionParser, (direction) => {
 
 ## Install
 
-Zfn depends on `myzod` as a peer dependency, so make sure to install it as well.
-
 ```
-npm install zfn myzod
+npm install zfn
 ```
 
 ## Usage

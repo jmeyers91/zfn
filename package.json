@@ -1,6 +1,6 @@
 {
   "name": "zfn",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A tiny utility for writing TS functions with runtime type validation.",
   "keywords": [
     "myzod",
