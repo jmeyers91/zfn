@@ -2,6 +2,12 @@
 
 A tiny utility for writing TS functions with runtime validation.
 
+## Install
+
+```
+npm install zfn
+```
+
 ## Example
 
 Works with [myzod](https://www.npmjs.com/package/myzod) and [zod](https://www.npmjs.com/package/zod).
@@ -39,12 +45,6 @@ const DirectionParser = {
 const turn = Zfn(DirectionParser, (direction) => {
   // direction's inferred type is `"left" | "right"`
 });
-```
-
-## Install
-
-```
-npm install zfn
 ```
 
 ## Usage
