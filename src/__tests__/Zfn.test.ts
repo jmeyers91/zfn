@@ -40,8 +40,12 @@ describe("Zfn", () => {
       number: 10,
       boolean: true,
     });
-    expect(() => fn(null as any, 10, true)).toThrow("Not string");
-    expect(() => fn("test", null as any, true)).toThrow("Not number");
-    expect(() => fn("test", 10, null as any)).toThrow("Not boolean");
+
+    // @ts-expect-error
+    expect(() => fn(null, 10, true)).toThrow("Not string");
+    // @ts-expect-error
+    expect(() => fn("test", null, true)).toThrow("Not number");
+    // @ts-expect-error
+    expect(() => fn("test", 10, null)).toThrow("Not boolean");
   });
 });
