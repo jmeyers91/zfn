@@ -1,6 +1,6 @@
 # zfn
 
-A tiny utility for writing TS functions with runtime validation.
+A tiny function for writing TS functions with runtime validation.
 
 ![Build](https://github.com/jmeyers91/zfn/actions/workflows/ci.yml/badge.svg)
 
